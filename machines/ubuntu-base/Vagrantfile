@@ -10,8 +10,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
 
   config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
-  config.vm.provision :shell, path: "../provisioning/base-bootstrap.sh"
-  config.vm.provision :shell, path: "../provisioning/install-unity-1.sh"
+  config.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+  config.vm.provision :shell, path: "../../provisioning/install-unity.sh"
   config.vm.provision :unix_reboot
   
    config.vm.provider "virtualbox" do |vb|

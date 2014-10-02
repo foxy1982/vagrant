@@ -13,8 +13,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "janihur/ubuntu-1404-desktop"
   
   config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
-  config.vm.provision :shell, path: "bootstrap.sh"
-  config.vm.provision :shell, path: "../provisioning/install-monodevelop.sh"
+  config.vm.provision :shell, path: "../../provisioning/bootstrap.sh"
+  config.vm.provision :shell, path: "../../provisioning/install-monodevelop.sh"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
