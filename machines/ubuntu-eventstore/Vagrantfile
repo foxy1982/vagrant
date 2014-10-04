@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
   config.vm.provision :shell, path: "../../provisioning/install-unity.sh"
   config.vm.provision :shell, path: "../../provisioning/install-mono.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-monodevelop.sh"
+  config.vm.provision :shell, path: "../../provisioning/install-eventstore.sh"
   config.vm.provision :unix_reboot
   
    config.vm.provider "virtualbox" do |vb|
@@ -23,5 +23,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
      vb.customize ["modifyvm", :id, "--memory", "1024"]
    end
   
-
+   config.vm.network "forwarded_port", guest: 1113, host: 1113
+   config.vm.network "forwarded_port", guest: 2113, host: 2113
 end
