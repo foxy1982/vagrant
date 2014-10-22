@@ -1,0 +1,64 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require('../../provisioning/vagrant-provision-reboot-plugin.rb')
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define :haproxy do |haproxy|
+    haproxy.vm.box = "ubuntu/trusty64"
+    haproxy.vm.network "private_network", ip: "192.168.64.10"
+    haproxy.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    haproxy.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    haproxy.vm.provision :shell, path: "../../provisioning/install-haproxy.sh"
+    haproxy.vm.provision :shell, path: "../../provisioning/configure-haproxy.sh"
+
+    haproxy.vm.provider "virtualbox" do |vm|
+  #    vm.name = "haproxy-lb"
+    end
+
+    haproxy.vm.hostname = "haproxy"
+  end
+
+  config.vm.define :rabbit1 do |rabbit1|
+    rabbit1.vm.box = "ubuntu/trusty64"
+    rabbit1.vm.network "private_network", ip: "192.168.64.11"
+    rabbit1.vm.provision :shell, :inline => "echo '192.168.64.11 rabbit1' >> /etc/hosts"
+    rabbit1.vm.provision :shell, :inline => "echo '192.168.64.12 rabbit2' >> /etc/hosts"
+    rabbit1.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    rabbit1.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    rabbit1.vm.provision :shell, path: "../../provisioning/install-rabbitmq.sh"
+    rabbit1.vm.provision :shell, path: "../../provisioning/configure-rabbitmq.sh"
+    rabbit1.vm.provision :unix_reboot
+ 
+    rabbit1.vm.provider "virtualbox" do |vm|
+  #    vm.name = "rabbit1-lb"
+    end
+
+    rabbit1.vm.hostname = "rabbit1"
+  end
+
+
+  config.vm.define :rabbit2 do |rabbit2|
+    rabbit2.vm.box = "ubuntu/trusty64"
+    rabbit2.vm.network "private_network", ip: "192.168.64.12"
+    rabbit2.vm.provision :shell, :inline => "echo '192.168.64.11 rabbit1' >> /etc/hosts"
+    rabbit2.vm.provision :shell, :inline => "echo '192.168.64.12 rabbit2' >> /etc/hosts"
+    rabbit2.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    rabbit2.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    rabbit2.vm.provision :shell, path: "../../provisioning/install-rabbitmq.sh"
+    rabbit2.vm.provision :shell, path: "../../provisioning/configure-rabbitmq.sh"
+    rabbit2.vm.provision :unix_reboot
+    rabbit2.vm.provision :shell, path: "../../provisioning/configure-rabbitmq-slave.sh"
+
+    rabbit2.vm.provider "virtualbox" do |vm|
+  #    vm.name = "rabbit2-lb"
+    end
+
+    rabbit2.vm.hostname = "rabbit2"
+  end
+
+end
