@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require('../../provisioning/vagrant-provision-reboot-plugin.rb')
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.define :rabbit1 do |rabbit_config|
+    rabbit_config.vm.box = "ubuntu/trusty64"
+    rabbit_config.vm.network "private_network", ip: "192.168.64.11"
+    rabbit_config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    rabbit_config.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    rabbit_config.vm.provision :shell, path: "../../provisioning/install-rabbitmq.sh"
+
+    rabbit_config.vm.provider "virtualbox" do |vm|
+      vm.name = "rabbit-1"
+    end
+
+    rabbit_config.vm.hostname = "rabbit1"
+  end
+
+
+  config.vm.define :rabbit2 do |rabbit_config|
+    rabbit_config.vm.box = "ubuntu/trusty64"
+    rabbit_config.vm.network "private_network", ip: "192.168.64.12"
+    rabbit_config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    rabbit_config.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    rabbit_config.vm.provision :shell, path: "../../provisioning/install-rabbitmq.sh"
+
+    rabbit_config.vm.provider "virtualbox" do |vm|
+      vm.name = "rabbit-2"
+    end
+
+    rabbit_config.vm.hostname = "rabbit2"
+  end
+
+end
