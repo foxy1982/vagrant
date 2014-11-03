@@ -6,6 +6,10 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
+  #config.vm.network "private_network", ip: "192.168.64.20"
+
+  config.vm.network "forwarded_port", guest: 27017, host: 27017
+
   config.vm.define :config do |config|
     config.vm.box = "ubuntu/trusty64"
     config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
@@ -14,12 +18,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.provider "virtualbox" do |vm|
   #    vm.name = "mongodb"
+  #vm.gui = true
     end
 
     config.vm.hostname = "mongodb"
   end
-
-   config.vm.network "forwarded_port", guest: 27017, host: 27017
-   config.vm.network "forwarded_port", guest: 28017, host: 28017
 
 end
