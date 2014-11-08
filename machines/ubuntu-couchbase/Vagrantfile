@@ -12,15 +12,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
   config.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
   config.vm.provision :shell, path: "../../provisioning/install-unity.sh"
-  config.vm.provision :unix_reboot
   config.vm.provision :puppet
+  config.vm.provision :unix_reboot
   
    config.vm.provider "virtualbox" do |vb|
      # Don't boot with headless mode
-     vb.gui = true
+     #vb.gui = true
   
      vb.customize ["modifyvm", :id, "--memory", "1024"]
    end
   
-   config.vm.network "forwarded_port", guest: 8091, host: 8091
+   config.vm.network "private_network", ip: "192.168.64.100"
 end
