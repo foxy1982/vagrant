@@ -1,4 +1,6 @@
-A collection of definitions for virtual machines for use with [Vagrant](http://www.vagrantup.com)
+# Vagrant machine definitions
+
+##  A collection of definitions for virtual machines for use with [Vagrant](http://www.vagrantup.com)
 
 To use these you will need to install:
 
