@@ -1,1 +1,2 @@
-mongod.cfg
+mongodb-init.js
+mongodb-users.js
