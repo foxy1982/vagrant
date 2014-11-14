@@ -1,0 +1,62 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require('../../provisioning/vagrant-provision-reboot-plugin.rb')
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define :mongo2 do |mongo2|
+    mongo2.vm.box = "ubuntu/trusty64"
+    mongo2.vm.network "private_network", ip: "192.168.64.22"
+    mongo2.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    mongo2.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    mongo2.vm.provision :shell, path: "../../provisioning/install-mongodb.sh"
+
+    mongo2.vm.provision :shell, path: "config-mongodb-2.sh"
+
+    mongo2.vm.provision :unix_reboot
+    mongo2.vm.hostname = "mongo2"
+    mongo2.vm.provider "virtualbox" do |vm|
+  #    vm.name = "mongodb2"
+      #vm.gui = true
+    end
+  end
+
+  config.vm.define :mongo3 do |mongo3|
+    mongo3.vm.box = "ubuntu/trusty64"
+    mongo3.vm.network "private_network", ip: "192.168.64.23"
+    mongo3.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    mongo3.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    mongo3.vm.provision :shell, path: "../../provisioning/install-mongodb.sh"
+
+    mongo3.vm.provision :shell, path: "config-mongodb-3.sh"
+
+    mongo3.vm.provision :unix_reboot
+    mongo3.vm.hostname = "mongo3"
+    mongo3.vm.provider "virtualbox" do |vm|
+  #    vm.name = "mongodb3"
+      #vm.gui = true
+    end
+  end
+
+  config.vm.define :mongo1 do |mongo1|
+    mongo1.vm.box = "ubuntu/trusty64"
+    mongo1.vm.network "private_network", ip: "192.168.64.21"
+    mongo1.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    mongo1.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    mongo1.vm.provision :shell, path: "../../provisioning/install-mongodb.sh"
+
+    mongo1.vm.provision :shell, path: "config-mongodb-1.sh"
+
+    mongo1.vm.provision :unix_reboot
+    mongo1.vm.hostname = "mongo1"
+    mongo1.vm.provider "virtualbox" do |vm|
+  #    vm.name = "mongodb1"
+      #vm.gui = true
+    end
+  end
+
+end
