@@ -1,6 +1,7 @@
 exec { "couchbase-server-source": 
     command => "/usr/bin/wget http://packages.couchbase.com/releases/3.0.1/couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb",
     cwd => "/home/vagrant/",
+    timeout => 1800,
     creates => "/home/vagrant/couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb",
     before => Package['couchbase-server']
 }
