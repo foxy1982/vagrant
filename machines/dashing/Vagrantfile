@@ -12,23 +12,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
   config.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
   config.vm.provision :shell, path: "../../provisioning/install-unity.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-go.sh"
   config.vm.provision :shell, path: "../../provisioning/install-nodejs.sh"
   config.vm.provision :shell, path: "../../provisioning/install-ruby.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-java.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-logstash.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-nginx.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-git.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-firefox.sh"
-  config.vm.provision :shell, path: "../../provisioning/install-sublimetext.sh"
+  config.vm.provision :shell, path: "../../provisioning/install-dashing.sh"
   config.vm.provision :unix_reboot
 
-  config.vm.network "forwarded_port", guest: 4000, host: 4000
+  config.vm.network "forwarded_port", guest: 3030, host: 3333
 
    config.vm.provider "virtualbox" do |vb|
      vb.gui = true
 
-     vb.customize ["modifyvm", :id, "--memory", "2048"]
+     vb.customize ["modifyvm", :id, "--memory", "1024"]
    end
+
+  config.vm.synced_folder "C:/Users/danfox/src/git/booking-process-dashboard","/home/vagrant/booking-process-dashboard"
 
 end
