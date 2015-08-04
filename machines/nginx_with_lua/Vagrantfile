@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require('../../provisioning/vagrant-provision-reboot-plugin.rb')
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
+
+  config.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+  config.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+  config.vm.provision :shell, path: "../../provisioning/install-unity.sh"
+  config.vm.provision :shell, path: "../../provisioning/install-nginx_lua.sh"
+  config.vm.provision :unix_reboot
+
+  config.vm.network "forwarded_port", guest: 4000, host: 4000
+
+   config.vm.provider "virtualbox" do |vb|
+     vb.gui = false
+
+     vb.customize ["modifyvm", :id, "--memory", "2048"]
+   end
+
+end
