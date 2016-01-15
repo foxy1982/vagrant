@@ -1,0 +1,28 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+require('../../provisioning/vagrant-provision-reboot-plugin.rb')
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define :ansibleserver do |ansibleserver|
+    ansibleserver.vm.box = "ubuntu/trusty64"
+    ansibleserver.vm.hostname = "ansible-server"
+
+    ansibleserver.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    ansibleserver.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+    ansibleserver.vm.provision :shell, path: "../../provisioning/install-ansible.sh"
+    #ansibleserver.vm.provision :unix_reboot
+
+    ansibleserver.vm.network "private_network", ip: "192.168.64.10"
+
+    ansibleserver.vm.provider "virtualbox" do |vb|
+      vb.gui = false
+
+      vb.customize ["modifyvm", :id, "--memory", "512"]
+    end
+  end
+end
