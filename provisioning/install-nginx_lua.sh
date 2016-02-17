@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt-get install libpcre3 libpcre3-dev zlib1g-dev
+apt-get install libpcre3 libpcre3-dev zlib1g-dev libssl-dev
 
 wget "http://luajit.org/download/LuaJIT-2.0.4.tar.gz"
 tar -C /opt -xzf "LuaJIT-2.0.4.tar.gz"
@@ -26,9 +26,13 @@ export LUAJIT_INC=/usr/local/include/luajit-2.0
 # Here we assume Nginx is to be installed under /opt/nginx/.
 ./configure --prefix=/opt/nginx \
         --with-ld-opt="-Wl,-rpath,/usr/local/lib" \
+        --with-http_ssl_module
         --add-module=/opt/ngx_devel_kit-0.2.19 \
         --add-module=/opt/lua-nginx-module-0.9.16
 
 make -j2
 make install
 
+wget 'https://github.com/cloudflare/lua-resty-cookie/archive/master.zip'
+mkdir /opt/lua-resty-cookie
+unzip -d /opt/lua-resty-cookie master.zip
