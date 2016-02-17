@@ -1,0 +1,28 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define :teamcity do |teamcity|
+    teamcity.vm.box = "ubuntu/trusty64"
+    teamcity.vm.network "private_network", ip: "192.168.64.22"
+    teamcity.vm.provision :shell, :inline => "echo \"Europe/London\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+    teamcity.vm.provision :shell, path: "../../provisioning/base-bootstrap.sh"
+
+    teamcity.vm.provision "docker" do |docker|
+      docker.images = ["ariya/centos6-teamcity-server", "ariya/centos6-teamcity-agent"]
+
+      docker.run "ariya/centos6-teamcity-server", args: "-p 8111:8111 -v /home/teamcity:/home/teamcity --name teamcity-server"
+      docker.run "ariya/centos6-teamcity-agent", name: "teamcity-agent"
+    end
+
+    teamcity.vm.hostname = "teamcity"
+    teamcity.vm.provider "virtualbox" do |vm|
+      #vm.gui = true
+      vm.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+  end
+end

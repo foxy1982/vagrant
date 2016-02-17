@@ -1,0 +1,14 @@
+# TeamCity Configuration Options
+
+TEAMCITY_SERVER_ENABLED=yes
+TEAMCITY_SERVER_PATH="/opt/TeamCity"
+TEAMCITY_SERVER_MEM_OPTS="-Xms750m -Xmx750m -XX:MaxPermSize=270m"
+TEAMCITY_DATA_PATH="/var/lib/TeamCity/BuildServer"
+TEAMCITY_SERVER_OPTS=""
+
+TEAMCITY_AGENT_ENABLED=yes
+TEAMCITY_AGENT_PATH="/var/TeamCity/buildAgent"
+TEAMCITY_AGENT_MEM_OPTS="-Xmx384m"
+TEAMCITY_AGENT_CONFIG_FILE="/var/lib/TeamCity/BuildAgent/buildAgent.properties"
+TEAMCITY_AGENT_LOG_DIR="/var/log/TeamCity/BuildAgent"
+TEAMCITY_AGENT_OPTS=""
